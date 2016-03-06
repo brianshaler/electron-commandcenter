@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+    <div id='thing'>thing..</div>
+    <script>
+    'use strict'
+
+    let el = document.getElementById('thing');
+    let hash = window.location.hash;
+    let pattern = /bounds=([\d]+),([\d]+),([\d]+),([\d]+),([\d]+),([\d]+)\b/;
+    let match = pattern.exec(hash);
+    let bounds = [];
+    if (match.length > 1) {
+      let windowX = parseInt(match[1]);
+      let windowY = parseInt(match[2]);
+      let windowWidth = parseInt(match[3]);
+      let windowHeight = parseInt(match[4]);
+      let totalWidth = parseInt(match[5]);
+      let totalHeight = parseInt(match[6]);
+      bounds = [
+        windowX,
+        windowY,
+        windowWidth,
+        windowHeight,
+        totalWidth,
+        totalHeight
+      ];
+    }
+    el.innerHTML = bounds.join(' x ');
+    </script>
+  </body>
+</html>
