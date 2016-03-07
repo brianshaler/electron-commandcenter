@@ -23,21 +23,21 @@ createWindows = (displaySettings) ->
 
   minX = displays.reduce (memo, display) ->
     left = display.workArea.x
-    memo = left unless memo > left
+    memo = left unless memo < left
     memo
-  , 0
+  , Infinity
   minY = displays.reduce (memo, display) ->
     top = display.workArea.y
-    memo = top unless memo > top
+    memo = top unless memo < top
     memo
-  , 0
+  , Infinity
   totalWidth = displays.reduce (memo, display) ->
-    right = display.workArea.width
+    right = display.workArea.x + display.workArea.width
     memo = right unless memo > right
     memo
   , 0
   totalHeight = displays.reduce (memo, display) ->
-    bottom = display.workArea.height
+    bottom = display.workArea.y + display.workArea.height
     memo = bottom unless memo > bottom
     memo
   , 0
@@ -56,72 +56,6 @@ createWindows = (displaySettings) ->
       height: Math.ceil display.height / displayArray.rows * totalHeight
 
   console.log 'displays', displays
-
-  displays1 = []
-  displays1.push
-    bounds:
-      x: minX
-      y: minY
-      width: totalWidth / 3
-      height: totalHeight
-  displays1.push
-    bounds:
-      x: minX + totalWidth / 3
-      y: minY
-      width: totalWidth / 3
-      height: totalHeight
-  displays1.push
-    bounds:
-      x: minX + totalWidth * 2 / 3
-      y: minY
-      width: totalWidth / 3
-      height: totalHeight
-
-  displays2 = []
-  displays2.push
-    bounds:
-      x: minX
-      y: minY
-      width: totalWidth / 3
-      height: totalHeight / 2
-  displays2.push
-    bounds:
-      x: minX
-      y: minY + totalHeight / 2
-      width: totalWidth / 6
-      height: totalHeight / 2
-  displays2.push
-    bounds:
-      x: minX + totalWidth / 6
-      y: minY + totalHeight / 2
-      width: totalWidth / 6
-      height: totalHeight / 2
-  displays2.push
-    bounds:
-      x: minX + totalWidth / 3
-      y: minY
-      width: totalWidth / 3
-      height: totalHeight
-  displays2.push
-    bounds:
-      x: minX + totalWidth * 2 / 3
-      y: minY
-      width: totalWidth / 6
-      height: totalHeight
-  displays2.push
-    bounds:
-      x: minX + totalWidth * 5 / 6
-      y: minY
-      width: totalWidth / 6
-      height: totalHeight / 2
-  displays2.push
-    bounds:
-      x: minX + totalWidth * 5 / 6
-      y: minY + totalHeight / 2
-      width: totalWidth / 6
-      height: totalHeight / 2
-
-  # displays = displays2
 
   displays.forEach (display) ->
     bounds =
@@ -146,7 +80,7 @@ createWindows = (displaySettings) ->
       height: bounds.height
       enableLargerThanScreen: true
       frame: false
-    # window.setBounds(bounds, false);
+    window.setBounds(bounds, false);
 
     # window.loadURL('http://mucholol.com/');
     # https://www.youtube.com/watch?v=NeQ0_e7aa8o

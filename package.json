@@ -4,7 +4,8 @@
   "description": "",
   "main": "lib/main.js",
   "scripts": {
-    "start": "electron lib/main.js"
+    "start": "electron lib/main.js",
+    "build": "gulp"
   },
   "author": "Brian Shaler",
   "license": "CC0-1.0",

@@ -26,7 +26,7 @@ module.exports = Launcher =
 
     window.loadURL "file://#{path.resolve viewsPath, 'launcher.html'}"
 
-    window.webContents.openDevTools()
+    # window.webContents.openDevTools()
 
     # window.on 'closed', ->
     #   app.quit()
