@@ -95,7 +95,6 @@ createWindows = (displaySettings) ->
 
     window.on 'closed', ->
       return unless windows?
-      Launcher.show primaryDisplay
       _windows = windows
       windows = null
       _windows.forEach (w) ->
@@ -104,6 +103,7 @@ createWindows = (displaySettings) ->
         catch ex
           'nothing'
       # app.quit()
+      Launcher.show primaryDisplay
 
     windows.push window
 
