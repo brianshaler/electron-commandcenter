@@ -15,7 +15,19 @@ displayArray =
 primaryDisplay = null
 windows = null
 
+closeWindows = ->
+  return unless windows?.length > 0
+  _windows = windows
+  windows = null
+  _windows.forEach (w) ->
+    try
+      w.close()
+    catch ex
+      'nothing'
+
 createWindows = (displaySettings) ->
+  if windows?.length > 0
+    closeWindows()
   windows = []
   # Create the browser window.
   displays = electronScreen.getAllDisplays()
@@ -94,14 +106,7 @@ createWindows = (displaySettings) ->
     # window.webContents.openDevTools();
 
     window.on 'closed', ->
-      return unless windows?
-      _windows = windows
-      windows = null
-      _windows.forEach (w) ->
-        try
-          w.close()
-        catch ex
-          'nothing'
+      closeWindows()
       # app.quit()
       Launcher.show primaryDisplay
 
