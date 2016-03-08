@@ -16,14 +16,16 @@ ipcMain.on 'launch', (event, data) ->
   Launcher.hide()
 
 module.exports = Launcher =
-  show: ->
+  show: (display) ->
     if window?
       window.show()
-      return
+    else
+      window = new BrowserWindow
+        width: 800
+        height: display?.workArea?.height ? 400
+        frame: true
 
-    window = new BrowserWindow
-      frame: true
-
+    # load/reload regardless
     window.loadURL "file://#{path.resolve viewsPath, 'launcher.html'}"
 
     # window.webContents.openDevTools()
