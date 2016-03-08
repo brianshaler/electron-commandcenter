@@ -12,6 +12,7 @@ displayArray =
   cols: 6
   rows: 2
 
+primaryDisplay = null
 windows = null
 
 createWindows = (displaySettings) ->
@@ -94,7 +95,7 @@ createWindows = (displaySettings) ->
 
     window.on 'closed', ->
       return unless windows?
-      Launcher.show()
+      Launcher.show primaryDisplay
       _windows = windows
       windows = null
       _windows.forEach (w) ->
@@ -126,7 +127,8 @@ ipcMain.on 'launch', (event, data) ->
 # initialization and is ready to create browser windows.
 app.on 'ready', ->
   electronScreen = electron.screen
-  Launcher.show()
+  primaryDisplay = electronScreen.getPrimaryDisplay()
+  Launcher.show primaryDisplay
 
 # # Quit when all windows are closed.
 # app.on 'window-all-closed', ->
