@@ -54,9 +54,10 @@ App = React.createFactory React.createClass
             configuration: c
             selected: index == @state.configurationId
             onSelect: @selectConfiguration index
-      DOM.button
-        onClick: @launch
-      , 'launch'
+            onLaunch: @launch
+      # DOM.button
+      #   onClick: @launch
+      # , 'launch'
 
 el = document.getElementById 'launcher'
 app = new App
@@ -65,37 +66,3 @@ app = new App
   configurations: []
 
 ReactDOM.render app, el
-
-###
-
-'http://mucholol.com/'
-'http://www.youtube.com/embed/NeQ0_e7aa8o?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&autohide=1&playlist=NeQ0_e7aa8o'
-'http://www.youtube.com/embed/O4UV_SVGSUU?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&autohide=1&playlist=O4UV_SVGSUU'
-"file://#{__dirname}/index.html"
-
-###
-
-
-# el.onclick = ->
-#   data =
-#     displays: []
-#   data.displays.push
-#     x: 0
-#     y: 0
-#     width: 1 / 3
-#     height: 1
-#     url: 'http://mucholol.com/'
-#   data.displays.push
-#     x: 1 / 3
-#     y: 0
-#     width: 1 / 3
-#     height: 1
-#     url: "file://#{path.resolve __dirname, '../index.html'}"
-#   data.displays.push
-#     x: 2 / 3
-#     y: 0
-#     width: 1 / 3
-#     height: 1
-#     url: 'http://mucholol.com/'
-#
-#   ipcRenderer.send 'launch', data

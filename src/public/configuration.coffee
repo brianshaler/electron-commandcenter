@@ -13,16 +13,28 @@ module.exports = ConfigurationClass = React.createClass
 
     displayWidth = 30
     displayHeight = 6
+    borderRadius = 0.7
 
-    DOM.div null,
+    if !@props.selected
+      displayWidth *= 0.5
+      displayHeight *= 0.5
+      borderRadius *= 0.5
+
+    DOM.div
+      onClick: if @props.selected
+        @props.onLaunch
+      else
+        @props.onSelect
+    ,
       DOM.div null,
         DOM.h2 null, @props.configuration.name
       DOM.div
+        className: 'animate-all'
         style:
           margin: '1em 0'
           border: 'solid 1px #999'
           backgroundColor: 'rgba(0, 0, 0, 0.7)'
-          borderRadius: '0.7em'
+          borderRadius: "#{borderRadius}em"
           width: "#{displayWidth}em"
           height: "#{displayHeight}em"
       ,
@@ -33,6 +45,7 @@ module.exports = ConfigurationClass = React.createClass
           _.map displays, (display, displayIndex) =>
             DOM.div
               key: displayIndex
+              className: 'animate-all'
               style:
                 position: 'absolute'
                 left: "#{0.1 + display.x / displayArray.cols * displayWidth}em"
@@ -40,16 +53,24 @@ module.exports = ConfigurationClass = React.createClass
                 width: "#{-0.2 + display.width / displayArray.cols * displayWidth}em"
                 height: "#{-0.2 + display.height / displayArray.rows * displayHeight}em"
                 # border: 'solid 1px #bbb'
-                borderRadius: '0.5em'
+                borderRadius: "#{borderRadius * 0.8}em"
                 backgroundColor: 'rgba(100, 255, 100, 0.4)'
             , ' '
-
-      DOM.p null,
-        DOM.input
-          type: 'button'
-          value: 'select' + (if @props.selected then 'ed' else '')
-          disabled: @props.selected
-          onClick: @props.onSelect
+        if @props.selected
+          DOM.div
+            style:
+              position: 'absolute'
+          ,
+            DOM.input
+              type: 'button'
+              value: 'launch'
+              style:
+                position: 'absolute'
+                left: "#{displayWidth * 0.5}em"
+                top: "#{displayHeight * 0.5}em"
+              onClick: @props.onLaunch
+        else
+          null
 
 @Configuration = React.createFactory ConfigurationClass
 
