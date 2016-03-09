@@ -2,6 +2,7 @@ crypto = require 'crypto'
 
 _ = require 'lodash'
 React = require 'react'
+fileUrl = require 'file-url'
 
 getCacheImagePath = require '../getCacheImagePath'
 
@@ -63,7 +64,7 @@ module.exports = ConfigurationClass = React.createClass
                 borderRadius: "#{borderRadius * 0.8}em"
                 backgroundColor: 'rgba(100, 255, 100, 0.4)'
                 overflow: 'hidden'
-                backgroundImage: "url(#{getCacheImagePath.sync display.url, display.width, display.height})"
+                backgroundImage: "url(#{fileUrl getCacheImagePath.sync display.url, display.width, display.height})"
                 backgroundSize: "#{w} #{h}"
             , ' '
         if @props.selected

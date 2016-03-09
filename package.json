@@ -20,6 +20,7 @@
     "gulp-coffee": "^2.3.1"
   },
   "dependencies": {
+    "file-url": "^1.1.0",
     "lodash": "^4.6.1",
     "mkdirp": "^0.5.1",
     "react": "^0.14.7",
