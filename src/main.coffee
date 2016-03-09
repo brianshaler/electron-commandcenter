@@ -1,6 +1,11 @@
+fs = require 'fs'
 path = require 'path'
+crypto = require 'crypto'
 
+_ = require 'lodash'
 electron = require 'electron'
+mkdirp = require 'mkdirp'
+Promise = require 'when'
 
 Launcher = require './launcher'
 
@@ -14,6 +19,22 @@ displayArray =
 
 primaryDisplay = null
 windows = null
+counter = 0
+
+cacheDirPromise = Promise.promise (resolve, reject) ->
+  dirName = path.resolve __dirname, '../cache'
+  mkdirp dirName, (err) ->
+    return reject err if err
+    resolve dirName
+
+getCacheImagePath = (url, width, height) ->
+  cacheDirPromise
+  .then (cacheDir) ->
+    hash = crypto
+      .createHash 'md5'
+      .update String(width) + String(height) + url
+      .digest 'hex'
+    path.join cacheDir, "#{hash}.png"
 
 closeWindows = ->
   return unless windows?.length > 0
@@ -93,58 +114,45 @@ createWindows = (displaySettings) ->
       height: bounds.height
       enableLargerThanScreen: true
       frame: false
-    window.setBounds(bounds, false);
+    window._id = counter++
+    window.setBounds bounds, false
 
-    # window.loadURL('http://mucholol.com/');
-    # https://www.youtube.com/watch?v=NeQ0_e7aa8o
+    setTimeout ->
+      win = _.find windows, (w) -> w == window
+      return unless win?
+      getCacheImagePath display.url, bounds.width, bounds.height
+      .then (fileName) ->
+        Promise.promise (resolve, reject) ->
+          fs.exists fileName, (exists) ->
+            if exists
+              resolve false
+            else
+              resolve fileName
+      .then (fileName) ->
+        return unless fileName
+        Promise.promise (resolve, reject) ->
+          window.capturePage (img) ->
+            png = img?.toPng?()
+            resolve png
+        .then (imgBuffer) ->
+          return unless imgBuffer
+          fs.writeFile fileName, imgBuffer, (err) ->
+            return console.log err if err
+    , 5000
 
-    # window.loadURL('http://www.youtube.com/embed/NeQ0_e7aa8o?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&autohide=1&playlist=NeQ0_e7aa8o');
-    # window.loadURL('http://www.youtube.com/embed/O4UV_SVGSUU?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&autohide=1&playlist=O4UV_SVGSUU');
-    # window.loadURL "file://#{path.resolve __dirname, '..'}/index.html#bounds=#{boundsStr}"
     window.loadURL display.url
-
-    # window.webContents.openDevTools();
 
     window.on 'closed', ->
       closeWindows()
-      # app.quit()
+      console.log 'windows closed, show launcher', arguments
       Launcher.show primaryDisplay
 
     windows.push window
 
-  # and load the index.html of the app.
-
-  # Open the DevTools.
-  # mainWindow.webContents.openDevTools();
-
-  # Emitted when the window is closed.
-  # mainWindow.on('closed', function() {
-  #   # Dereference the window object, usually you would store windows
-  #   # in an array if your app supports multi windows, this is the time
-  #   # when you should delete the corresponding element.
-  #   mainWindow = null;
-  # });
-
 ipcMain.on 'launch', (event, data) ->
   createWindows data.displays
 
-# This method will be called when Electron has finished
-# initialization and is ready to create browser windows.
 app.on 'ready', ->
   electronScreen = electron.screen
   primaryDisplay = electronScreen.getPrimaryDisplay()
   Launcher.show primaryDisplay
-
-# # Quit when all windows are closed.
-# app.on 'window-all-closed', ->
-#   # On OS X it is common for applications and their menu bar
-#   # to stay active until the user quits explicitly with Cmd + Q
-#   if process.platform != 'darwin'
-#     app.quit()
-
-# app.on 'activate', ->
-#   # On OS X it's common to re-create a window in the app when the
-#   # dock icon is clicked and there are no other windows open.
-#   # if (mainWindow === null) {
-#   #   createWindows();
-#   # }
