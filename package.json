@@ -5,12 +5,14 @@
   "main": "lib/main.js",
   "scripts": {
     "start": "electron lib/main.js",
-    "build": "gulp"
+    "build": "gulp",
+    "dist": "electron-packager . CommandCenter --platform=win32 --arch=x64"
   },
   "author": "Brian Shaler",
   "license": "CC0-1.0",
   "devDependencies": {
     "coffee-script": "^1.10.0",
+    "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.0",
     "gulp": "^3.8.6",
     "gulp-autowatch": "^1.0.2",
