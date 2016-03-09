@@ -133,3 +133,7 @@ app.on 'ready', ->
   electronScreen = electron.screen
   primaryDisplay = electronScreen.getPrimaryDisplay()
   Launcher.show primaryDisplay
+
+# Quit when all windows are closed.
+app.on 'window-all-closed', ->
+  app.quit()
