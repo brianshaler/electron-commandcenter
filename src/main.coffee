@@ -1,13 +1,12 @@
 fs = require 'fs'
 path = require 'path'
-crypto = require 'crypto'
 
 _ = require 'lodash'
 electron = require 'electron'
-mkdirp = require 'mkdirp'
 Promise = require 'when'
 
 Launcher = require './launcher'
+getCacheImagePath = require './getCacheImagePath'
 
 {app, ipcMain} = electron
 electronScreen = null
@@ -19,22 +18,6 @@ displayArray =
 
 primaryDisplay = null
 windows = null
-counter = 0
-
-cacheDirPromise = Promise.promise (resolve, reject) ->
-  dirName = path.resolve __dirname, '../cache'
-  mkdirp dirName, (err) ->
-    return reject err if err
-    resolve dirName
-
-getCacheImagePath = (url, width, height) ->
-  cacheDirPromise
-  .then (cacheDir) ->
-    hash = crypto
-      .createHash 'md5'
-      .update String(width) + String(height) + url
-      .digest 'hex'
-    path.join cacheDir, "#{hash}.png"
 
 closeWindows = ->
   return unless windows?.length > 0
@@ -84,6 +67,8 @@ createWindows = (displaySettings) ->
   displays = displaySettings.map (display) ->
     url: display.url
     bounds:
+      cols: display.width
+      rows: display.height
       x: Math.floor minX + display.x / displayArray.cols * totalWidth
       y: Math.floor minY + display.y / displayArray.rows * totalHeight
       width: Math.ceil display.width / displayArray.cols * totalWidth
@@ -97,15 +82,8 @@ createWindows = (displaySettings) ->
       y: Math.floor display.bounds.y
       width: Math.ceil display.bounds.width
       height: Math.ceil display.bounds.height
-    boundsStr = [
-      bounds.x
-      bounds.y
-      bounds.width
-      bounds.height
-      totalWidth
-      totalHeight
-    ].join ','
-    console.log boundsStr
+      cols: display.bounds.cols
+      rows: display.bounds.rows
 
     window = new BrowserWindow
       x: bounds.x
@@ -114,13 +92,12 @@ createWindows = (displaySettings) ->
       height: bounds.height
       enableLargerThanScreen: true
       frame: false
-    window._id = counter++
     window.setBounds bounds, false
 
     setTimeout ->
       win = _.find windows, (w) -> w == window
       return unless win?
-      getCacheImagePath display.url, bounds.width, bounds.height
+      getCacheImagePath display.url, bounds.cols, bounds.rows
       .then (fileName) ->
         Promise.promise (resolve, reject) ->
           fs.exists fileName, (exists) ->

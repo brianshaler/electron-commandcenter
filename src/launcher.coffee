@@ -7,8 +7,7 @@ BrowserWindow = electron.BrowserWindow
 
 window = null
 
-clientPath = path.resolve __dirname, '../client'
-viewsPath = path.resolve clientPath, 'views'
+viewsPath = path.resolve __dirname, '../lib/views'
 
 Launcher = null
 
@@ -24,7 +23,7 @@ module.exports = Launcher =
 
     window = new BrowserWindow
       width: 800
-      height: display?.workArea?.height ? 400
+      height: Math.round (display?.workArea?.height ? 800) * 0.9
       frame: true
 
     # load/reload regardless

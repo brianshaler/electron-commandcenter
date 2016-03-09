@@ -1,5 +1,9 @@
+crypto = require 'crypto'
+
 _ = require 'lodash'
 React = require 'react'
+
+getCacheImagePath = require '../getCacheImagePath'
 
 {DOM} = React
 
@@ -43,6 +47,9 @@ module.exports = ConfigurationClass = React.createClass
             position: 'absolute'
         ,
           _.map displays, (display, displayIndex) =>
+            w = "#{-0.2 + display.width / displayArray.cols * displayWidth}em"
+            h = "#{-0.2 + display.height / displayArray.rows * displayHeight}em"
+
             DOM.div
               key: displayIndex
               className: 'animate-all'
@@ -50,11 +57,14 @@ module.exports = ConfigurationClass = React.createClass
                 position: 'absolute'
                 left: "#{0.1 + display.x / displayArray.cols * displayWidth}em"
                 top: "#{0.1 + display.y / displayArray.rows * displayHeight}em"
-                width: "#{-0.2 + display.width / displayArray.cols * displayWidth}em"
-                height: "#{-0.2 + display.height / displayArray.rows * displayHeight}em"
+                width: w
+                height: h
                 # border: 'solid 1px #bbb'
                 borderRadius: "#{borderRadius * 0.8}em"
                 backgroundColor: 'rgba(100, 255, 100, 0.4)'
+                overflow: 'hidden'
+                backgroundImage: "url(#{getCacheImagePath.sync display.url, display.width, display.height})"
+                backgroundSize: "#{w} #{h}"
             , ' '
         if @props.selected
           DOM.div
