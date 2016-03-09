@@ -19,11 +19,13 @@ module.exports = Launcher =
   show: (display) ->
     if window?
       window.show()
-    else
-      window = new BrowserWindow
-        width: 800
-        height: display?.workArea?.height ? 400
-        frame: true
+      window.reload()
+      return
+
+    window = new BrowserWindow
+      width: 800
+      height: display?.workArea?.height ? 400
+      frame: true
 
     # load/reload regardless
     window.loadURL "file://#{path.resolve viewsPath, 'launcher.html'}"
