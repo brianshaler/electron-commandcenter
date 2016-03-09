@@ -41,6 +41,7 @@ App = React.createFactory React.createClass
 
   launch: (e) ->
     e.preventDefault()
+    e.stopPropagation()
     configuration = @state.configurations[@state.configurationId]
     @props.onLaunch configuration
 
