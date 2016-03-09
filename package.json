@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron lib/main.js",
     "build": "gulp",
-    "dist": "electron-packager . CommandCenter --platform=win32 --arch=x64"
+    "dist": "electron-packager . CommandCenter --platform=win32 --arch=x64 --overwrite"
   },
   "author": "Brian Shaler",
   "license": "CC0-1.0",
